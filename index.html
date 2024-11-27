@@ -1,25 +1,82 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-    <head><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
-        <title>Add to Cart</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap" rel="stylesheet">
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-        <link rel="manifest" href="/site.webmanifest">
-        <link rel="stylesheet" href="index.css">
-    </head>
-    <body>
-        <div class="container">
-            <img src="assets/cat.png">
-            <input type="text" id="input-field" placeholder="Bread">
-            <button id="add-button">Add to cart</button>
-            <ul id="shopping-list">
-            </ul>
+
+<head><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+    <title> </title>
+    <link rel="apple-touch-icon" sizes="180x180" href="Images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="Images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="Images/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300&family=Martian+Mono:wght@500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@600&display=swap" rel="stylesheet">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri&family=Noto+Naskh+Arabic:wght@600&family=Reem+Kufi:wght@400;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="tab" style="position: fixed;  top: 0 ; overflow: hidden;">
+        <button id="homeTab" class="tablinks fa fa-home" > </button>
+        <button id="userTab" class="tablinks fa fa-user" > </button>
+        <button id="bookTab" class="tablinks fa fa-book" > </button>
+            
+            <!-- <input class=" menu" type="radio" name="menu">
+            <input class="menu" type="radio" name="menu"> -->
+
+    </div>
+
+    <div id="home" class="tabcontent">
+        <h2 id="h2"> home</h2>
+    </div>
+    <div id="user" class="tabcontent">
+        <h2> user</h2>
+    </div>
+    <div id="book" class="tabcontent">
+        <h2> book</h2>
+    </div>
+
+
+    <div class="container" style="overflow-y: auto; height:800px;">
+
+        <label id="h1" class="child float-left-child">
+            <input id="khatmaNo" placeholder="431" style="font-family: 'Reem Kufi'; font-size: 35px"></input>
+            Word
+        </label>
+
+        <div>
+            <!-- <button class="dropbtn" style="width:15%"> 
+    <i class="fa fa-times-circle-o" ></i>
+    </button> -->
+            <select name="status" id="status" class="selectpicker" hidden="true">
+                <option value=""></option>
+                <option value="true" style="color:#224823 "> &#xf00c; </option>
+                <option value="false" style="color:#73000c "> &#xf00d; </option>
+            </select>
+            <input style="width:75%" type="text" id="search" placeholder="..بحث " title="Type in a name">
         </div>
-        <script src="index.js" type="module"></script>
-    </body>
+
+
+        <table id="table" class="table">
+            <thead>
+ 
+            </thead>
+            <tbody id="tBody"> </tbody>
+        </table>
+
+        <script src="index.js"  type="module"></script>
+
+</body>
+
 </html>
