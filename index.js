@@ -62,7 +62,6 @@ async function fetchData() {
 }
 
 
-
 // Function to Populate Table Rows
 /* function populateTable(data) {
   for (const key in data) {
