@@ -24,20 +24,25 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Amiri&family=Noto+Naskh+Arabic:wght@600&family=Reem+Kufi:wght@400;600&display=swap"
         rel="stylesheet">
+
+        <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+        rel="stylesheet"
+      />
 </head>
 
 <body>
     <div class="tab" style="position: fixed;  top: 0 ; overflow: hidden;">
-        <button id="homeTab" class="tablinks fa fa-home" > </button>
+<!--         <button id="homeTab" class="tablinks fa fa-home" > </button>
         <button id="userTab" class="tablinks fa fa-user" > </button>
         <button id="bookTab" class="tablinks fa fa-book" > </button>
-            
+             -->
             <!-- <input class=" menu" type="radio" name="menu">
             <input class="menu" type="radio" name="menu"> -->
 
     </div>
 
-    <div id="home" class="tabcontent">
+<!--     <div id="home" class="tabcontent">
         <h2 id="h2"> home</h2>
     </div>
     <div id="user" class="tabcontent">
@@ -45,15 +50,15 @@
     </div>
     <div id="book" class="tabcontent">
         <h2> book</h2>
-    </div>
+    </div> -->
 
 
     <div class="container" style="overflow-y: auto; height:800px;">
 
-        <label id="h1" class="child float-left-child">
+   <!--      <label id="h1" class="child float-left-child">
             <input id="khatmaNo" placeholder="431" style="font-family: 'Reem Kufi'; font-size: 35px"></input>
-            Word
-        </label>
+            Words
+        </label> -->
 
         <div>
             <!-- <button class="dropbtn" style="width:15%"> 
@@ -64,15 +69,34 @@
                 <option value="true" style="color:#224823 "> &#xf00c; </option>
                 <option value="false" style="color:#73000c "> &#xf00d; </option>
             </select>
-            <input style="width:75%" type="text" id="search" placeholder="..بحث " title="Type in a name">
+            <input style="width:75%" type="text" id="search" placeholder="..search  " title="Type in a name">
+
         </div>
 
+        <div>
+            <label for="lemmaFilter">Lemma:</label>
+            <input type="text" id="lemmaFilter" placeholder="Type lemma..." />
+          
+            <label for="freqFilter">Frequency:</label>
+            <select id="freqFilter">
+              <option value="">All</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+          
+        <list item></list>
 
         <table id="table" class="table">
             <thead>
- 
+            
             </thead>
             <tbody id="tBody"> </tbody>
+
+            
         </table>
 
         <script src="index.js"  type="module"></script>

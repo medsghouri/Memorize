@@ -69,3 +69,11 @@ ul li:hover {
     background-color: #FFECC7;
     cursor: pointer;
 }
+
+/* Make the table body scrollable */
+#tBody {
+    max-height: 800px;  /* Set a max height for the scrollable area */
+    overflow-y: auto;   /* Allow vertical scrolling */
+    display: block;     /* Ensure it behaves like a block element */
+    width: 100%;        /* Ensure it takes full width of the table */
+  }

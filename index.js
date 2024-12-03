@@ -1,27 +1,289 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-import {
-  getDatabase,
-  ref,
-  update,
-  onValue,
-  get,
-  child,
-} from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
-import { RowCl } from "./Classes/RowCl.js";
-import { UserCl } from "./Classes/UserCl.js";
+// Firebase Realtime Database Settings
+const databaseURL = "https://memorize-dict-default-rtdb.europe-west1.firebasedatabase.app/";
 
-import { DBManagerCl } from "./Classes/DBManagerCl.js";
-import { GUIManagerCl } from "./Classes/GUIManagerCl.js";
-import { DBUserCl, GuiUserCl } from "./Classes/User1Cl.js";
-import { DBKhatmaCl, GuiKhatmaCl } from "./Classes/KhatmaCl.js";
-import { DBHizbCl, GuiHizbCl } from "./Classes/HizbCl.js";
+// DOM Elements
+const tableBody = document.getElementById('tBody');
+const lemmaFilterInput = document.getElementById('lemmaFilter');
+const freqFilterInput = document.getElementById('freqFilter');
 
-const appSettings = {
-  databaseURL:
-    "https://memorize-dict-default-rtdb.europe-west1.firebasedatabase.app/",
-  // "https://read-the-quran-default-rtdb.europe-west1.firebasedatabase.app/",
+// Filter Criteria
+let lemmaFilter = '';
+let freqFilter = '';
+
+// Event Listeners for Filters
+lemmaFilterInput.addEventListener('input', (e) => {
+  lemmaFilter = e.target.value.toLowerCase();
+  fetchData(); // Re-fetch and apply filters
+});
+
+freqFilterInput.addEventListener('change', (e) => {
+  freqFilter = e.target.value;
+  fetchData(); // Re-fetch and apply filters
+});
+
+/* // Function to Fetch Data
+async function fetchData() {
+  tableBody.innerHTML = ''; // Clear existing rows
+  try {
+    const response = await fetch(`${databaseURL}.json?orderBy="$key"&limitToFirst=10`);
+    const data = await response.json();
+    populateTable(data); // Call function to populate rows
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+} */
+
+// Function to Fetch Data
+async function fetchData() {
+  tableBody.innerHTML = ''; // Clear existing rows
+  try {
+    // Fetch the first 10 rows ordered by key
+    const response = await fetch(`${databaseURL}.json?orderBy="$key"&limitToFirst=1000`);
+    const data = await response.json();
+
+    // Filter rows by lemma if a filter value is provided
+    const filteredData = Object.keys(data)
+      .filter((key) => {
+        const item = data[key];
+        if (lemmaFilter) {
+          return item.lemma && item.lemma.toLowerCase().startsWith(lemmaFilter);
+        }
+        return true; // Include all rows if no filter is applied
+      })
+      .reduce((result, key) => {
+        result[key] = data[key];
+        return result;
+      }, {});
+
+    populateTable(filteredData); // Populate rows with the filtered data
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+}
+
+
+
+// Function to Populate Table Rows
+/* function populateTable(data) {
+  for (const key in data) {
+    const item = data[key];
+
+    // Apply Filters
+    if (
+      lemmaFilter &&
+      !(item.lemma && item.lemma.toLowerCase().startsWith(lemmaFilter))
+    ) {
+      continue;
+    }
+    if (freqFilter && String(item.freq) !== freqFilter) {
+      continue;
+    }
+
+    const row = document.createElement('tr');
+
+    // Set row color based on status
+    row.style.backgroundColor = item.status === "F" ? "yellow" : "";
+
+    row.innerHTML = `
+      <td>${key}</td>
+      <td>${item.lemma || ''}</td>
+      <td>${item.status || ''}</td>
+      <td>${item.freq || ''}</td>
+      <td>
+        <button onclick="updateRow('${key}', '${item.status}')">
+          <i class="fas fa-flag"></i> <!-- Flag icon -->
+        </button>
+        <button onclick="deleteRow('${key}')">
+          <i class="fas fa-trash"></i> <!-- Trash can icon -->
+        </button>
+      </td>
+    `;
+
+    tableBody.appendChild(row);
+  }
+} */
+
+// Function to Populate Table Rows
+function populateTable(data) {
+  for (const key in data) {
+    const item = data[key];
+
+    // Apply Filters
+    if (
+      lemmaFilter &&
+      !(item.lemma && item.lemma.toLowerCase().startsWith(lemmaFilter))
+    ) {
+      continue;
+    }
+    if (freqFilter && String(item.freq) !== freqFilter) {
+      continue;
+    }
+
+    const row = document.createElement('tr');
+
+    // Add a data-id attribute to identify each row uniquely
+    row.setAttribute('data-id', key);
+
+    // Set row color based on status
+    row.style.backgroundColor = item.status === "F" ? "yellow" : "";
+
+    row.innerHTML = `
+      <td>${key}</td>
+      <td>${item.lemma || ''}</td>
+      <td class="status-cell">${item.status || ''}</td>
+      <td>${item.freq || ''}</td>
+      <td>
+        <button onclick="updateRow('${key}', '${item.status}')">
+          <i class="fas fa-flag"></i> <!-- Flag icon -->
+        </button>
+        <button onclick="deleteRow('${key}')">
+          <i class="fas fa-trash"></i> <!-- Trash can icon -->
+        </button>
+      </td>
+    `;
+
+    tableBody.appendChild(row);
+  }
+}
+
+
+// Expose updateRow globally for inline button handling
+window.updateRow = function (id, status) {
+  updateRow(id, status); // Pass the current status dynamically
 };
 
+
+
+/* // Function to Update an Existing Record and Toggle Status
+async function updateRow(id, currentStatus) {
+  try {
+    // Capture the current scroll position
+    const currentScrollPosition = 10 ; // tableBody.scrollTop;
+
+    // Toggle between "F" and an empty string
+    const newStatus = currentStatus === "F" ? "" : "F";
+
+    // Fetch the current record to preserve other fields
+    const response = await fetch(`${databaseURL}/${id}.json`);
+    const currentRecord = await response.json();
+
+    if (response.ok) {
+      // Update the status while preserving other fields
+      const updatedRecord = { ...currentRecord, status: newStatus };
+
+      const patchResponse = await fetch(`${databaseURL}/${id}.json`, {
+        method: 'PATCH', // Use PATCH instead of PUT for partial update
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedRecord),
+      });
+
+      if (patchResponse.ok) {
+        alert(`Record updated successfully! Status is now "${newStatus}"`);
+        
+        // Fetch the updated data and refresh the table
+        await fetchData();
+
+        // Restore the scroll position
+        tableBody.scrollTop = currentScrollPosition;
+      } else {
+        console.error('Error updating record:', patchResponse.statusText);
+      }
+    } else {
+      console.error('Error fetching current record:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+ */
+
+// Function to Update an Existing Record and Toggle Status
+async function updateRow(id, currentStatus) {
+  try {
+    // Toggle between "F" and an empty string
+    const newStatus = currentStatus === "F" ? "" : "F";
+
+    // Fetch the current record to preserve other fields
+    const response = await fetch(`${databaseURL}/${id}.json`);
+    const currentRecord = await response.json();
+
+    if (response.ok) {
+      // Update the status while preserving other fields
+      const updatedRecord = { ...currentRecord, status: newStatus };
+
+      const patchResponse = await fetch(`${databaseURL}/${id}.json`, {
+        method: 'PATCH', // Use PATCH instead of PUT for partial update
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedRecord),
+      });
+
+      if (patchResponse.ok) {
+        alert(`Record updated successfully! Status is now "${newStatus}"`);
+
+        // Find the row in the table by its ID
+        const row = document.querySelector(`tr[data-id="${id}"]`);
+        if (row) {
+          // Update the status cell in the row
+          const statusCell = row.querySelector('.status-cell');
+          if (statusCell) {
+            statusCell.textContent = newStatus || ' '; // Set to blank if the status is empty
+          }
+
+          // Optionally, toggle the row's background color based on the status
+          if (newStatus === "F") {
+            row.style.backgroundColor = 'yellow';
+          } else {
+            row.style.backgroundColor = ''; // Reset the background color if status is blank
+          }
+        }
+      } else {
+        console.error('Error updating record:', patchResponse.statusText);
+      }
+    } else {
+      console.error('Error fetching current record:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+
+// Function to Delete a Record
+async function deleteRow(id) {
+  try {
+    const response = await fetch(`${databaseURL}/${id}.json`, {
+      method: 'DELETE',
+    });
+    if (response.ok) {
+      alert('Record deleted successfully!');
+      fetchData();
+    } else {
+      console.error('Error deleting record:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+// Initial Fetch Call
+fetchData();
+/// --
+
+
+/// --
+
+
+
+  //--------------------------------------------
+  
+  
+
+
+      //}
 // ---------------------------------------------------------------------------------------------
 // Snapshot
 // ---------------------------------------------------------------------------------------------
@@ -48,18 +310,18 @@ const appSettings = {
 // ---------------------------------------------------------------------------------------------
 // Tabstrips
 // ---------------------------------------------------------------------------------------------
-var homeTab = document.getElementById("homeTab");
+/* var homeTab = document.getElementById("homeTab");
 var userTab = document.getElementById("userTab");
-var bookTab = document.getElementById("bookTab");
+var bookTab = document.getElementById("bookTab"); 
 
 const app = initializeApp(appSettings);
 
 //// Beginn
 
 // ---------------------------------------------------------------------------------
-// Home
+// Home 
 // ---------------------------------------------------------------------------------
-homeTab.addEventListener("click", function () {
+ homeTab.addEventListener("click", function () { 
   DBUserCl.initializeDB(app, "/user/");
   //-----------------------------------------
   onValue(DBUserCl.headRef, function (snapshot) {
@@ -97,7 +359,7 @@ homeTab.addEventListener("click", function () {
       });
     });
   });
-});
+ }); 
 
 // ---------------------------------------------------------------------------------
 // User
@@ -159,7 +421,7 @@ bookTab.addEventListener("click", function () {
       GuiKhatmaCl.addKhatmaBtn();
     });
   });
-});
+}); */
 
 //// End
 
