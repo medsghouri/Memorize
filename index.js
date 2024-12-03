@@ -153,7 +153,7 @@ window.updateRow = function (id, status) {
 
 
 
-/* // Function to Update an Existing Record and Toggle Status
+// Function to Update an Existing Record and Toggle Status
 async function updateRow(id, currentStatus) {
   try {
     // Capture the current scroll position
@@ -196,10 +196,10 @@ async function updateRow(id, currentStatus) {
     console.error('Error:', error);
   }
 }
- */
+
 
 // Function to Update an Existing Record and Toggle Status
-async function updateRow(id, currentStatus) {
+/* async function updateRow(id, currentStatus) {
   try {
     // Toggle between "F" and an empty string
     const newStatus = currentStatus === "F" ? "" : "F";
@@ -249,7 +249,7 @@ async function updateRow(id, currentStatus) {
     console.error('Error:', error);
   }
 }
-
+ */
 
 // Function to Delete a Record
 async function deleteRow(id) {
